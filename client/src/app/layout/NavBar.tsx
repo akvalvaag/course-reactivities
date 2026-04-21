@@ -1,11 +1,9 @@
-﻿import {AppBar, Box, Button, Container, Toolbar, Typography} from "@mui/material";
+﻿import {AppBar, Box, Button, Container, MenuList, Toolbar, Typography} from "@mui/material";
 import {Group} from "@mui/icons-material";
+import {NavLink} from "react-router";
+import MenuItemLink from "../shared/components/MenuItemLink.tsx";
 
-interface NavBarProps {
-    openForm: () => void
-}
-
-function NavBar({openForm}: NavBarProps) {
+function NavBar() {
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" sx={{
@@ -13,27 +11,21 @@ function NavBar({openForm}: NavBarProps) {
             }}>
                 <Container maxWidth='xl'>
                     <Toolbar sx={{display: "flex", justifyContent: "space-between"}}>
-                        <Box sx={{display: "flex", alignItems: "center"}}>
+                        <Box component={NavLink} to='/' sx={{display: "flex", alignItems: "center"}}>
                             <Group fontSize="large"/>
                             <Typography variant="h4" sx={{fontWeight: 'bold'}}>
                                 Reactivities
                             </Typography>
                         </Box>
-                        <Box sx={{display: "flex"}}>
-                            {['Activities', 'About', 'Contact'].map((item) => (
-                                <Typography key={item} sx={{
-                                    fontWeight: 'bold',
-                                    textTransform: 'uppercase',
-                                    fontSize: '1.2rem',
-                                    cursor: 'pointer',
-                                    px: 2,
-                                    '&:hover': {color: 'warning.main'}
-                                }}>
+                        <MenuList sx={{display: "flex"}}>
+                            {['activities', 'createActivity'].map((item) => (
+                                <MenuItemLink key={item} to={`/${item}`}>
                                     {item}
-                                </Typography>
+                                </MenuItemLink>
                             ))}
-                        </Box>
-                        <Button size="large" variant="contained" color="warning" onClick={openForm}>Create Activity</Button>
+                        </MenuList>
+                        <Button size="large" variant="contained" color="warning" onClick={() => {
+                        }}>User menu</Button>
                     </Toolbar>
                 </Container>
 
