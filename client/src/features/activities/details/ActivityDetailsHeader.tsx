@@ -22,7 +22,7 @@ export default function ActivityDetailsHeader({activity}: ActivityDetailsHeaderP
                 />
             )}
             <CardMedia
-                component="img"a
+                component="img"
                 height="300"
                 image={`/images/categoryImages/${activity.category}.jpg`}
                 alt={`${activity.category} image`}
