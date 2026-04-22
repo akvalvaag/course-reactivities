@@ -8,7 +8,6 @@ export const useActivities = (id?: string) => {
         queryKey: ['activities'],
         queryFn: async () => {
             const response = await agent.get<Activity[]>('/activities');
-            console.log(agent)
             return response.data;
         }
     });
