@@ -24,7 +24,7 @@ function NavBar() {
                             </Typography>
                         </Box>
                         <MenuList sx={{display: "flex"}}>
-                            {['activities', 'createActivity', 'counter'].map((item) => (
+                            {['activities', 'createActivity', 'counter', 'errors'].map((item) => (
                                 <MenuItemLink key={item} to={`/${item}`}>
                                     {item}
                                 </MenuItemLink>
