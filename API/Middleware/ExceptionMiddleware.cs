@@ -31,9 +31,9 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
         var response = env.IsDevelopment()
             ? new AppException(context.Response.StatusCode, exception.Message, exception.StackTrace)
             : new AppException(context.Response.StatusCode, exception.Message, null);
-        
-        var options = new JsonSerializerOptions{PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
-        
+
+        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
         var json = JsonSerializer.Serialize(response, options);
         await context.Response.WriteAsync(json);
     }
@@ -43,19 +43,12 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
         var validationErrors = new Dictionary<string, string[]>();
 
         if (vex.Errors is not null)
-        {
             foreach (var error in vex.Errors)
-            {
                 if (validationErrors.TryGetValue(error.PropertyName, out var existingErrors))
-                {
                     validationErrors[error.PropertyName] = [..existingErrors, error.ErrorMessage];
-                }
                 else
-                {
                     validationErrors.Add(error.PropertyName, [error.ErrorMessage]);
-                }
-            }
-        }
+
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
         var validationProblemDetails = new HttpValidationProblemDetails(validationErrors)
@@ -65,7 +58,7 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvir
             Title = "Validation Error",
             Detail = "One or more validation errors occurred"
         };
-        
+
         await context.Response.WriteAsJsonAsync(validationProblemDetails);
     }
 }

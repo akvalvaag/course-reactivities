@@ -1,8 +1,6 @@
-﻿using System.Windows.Input;
-using Application.Activities.DTOs;
+﻿using Application.Activities.DTOs;
 using Application.Core;
 using AutoMapper;
-using Domain;
 using MediatR;
 using Persistence;
 
@@ -21,15 +19,15 @@ public class EditActivity
         {
             var activity = await context.Activities
                 .FindAsync([request.ActivityDto.Id], cancellationToken);
-            
+
             if (activity == null) return Result<Unit>.Failure("Activity not found", 404);
 
-            
+
             mapper.Map(request.ActivityDto, activity);
-            
+
             var result = await context.SaveChangesAsync(cancellationToken) > 0;
             if (!result) return Result<Unit>.Failure("Failed to edit activity", 400);
-            
+
             return Result<Unit>.Success(Unit.Value);
         }
     }
