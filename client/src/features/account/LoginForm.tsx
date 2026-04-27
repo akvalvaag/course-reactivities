@@ -1,0 +1,58 @@
+﻿import {useAccount} from "../../lib/hooks/useAccount.ts";
+import {useForm} from "react-hook-form";
+import {loginSchema, type LoginSchema} from "../../lib/schemas/loginSchema.ts";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Box, Button, Paper, Typography} from "@mui/material";
+import {LockOpen} from "@mui/icons-material";
+import TextInput from "../../app/shared/components/TextInput.tsx";
+import {Link, useLocation, useNavigate} from "react-router";
+
+function LoginForm() {
+
+    const location = useLocation()
+    const navigate = useNavigate();
+    const {loginUser} = useAccount();
+    const {control, handleSubmit, formState: {isValid, isSubmitting}} = useForm<LoginSchema>({
+        mode: 'onTouched',
+        resolver: zodResolver(loginSchema)
+    });
+
+    const onSubmit = async (data: LoginSchema) => {
+        await loginUser.mutateAsync(data, {
+            onSuccess: async () => {
+                navigate(location.state?.from || '/activities')
+            }
+        });
+    }
+
+    return (
+        <Paper component={'form'} onSubmit={handleSubmit(onSubmit)} sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            p: 3,
+            gap: 3,
+            maxWidth: 'md',
+            mx: 'auto',
+            borderRadius: 3
+        }}>
+            <Box
+                sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3, color: 'secondary.main'}}>
+                <LockOpen fontSize={'large'}/>
+                <Typography variant={'h4'}>Sign in</Typography>
+            </Box>
+            <TextInput label='Email' name={'email'} control={control}/>
+            <TextInput label='Password' name={'password'} control={control} type="password"/>
+            <Button type={'submit'} disabled={!isValid} loading={isSubmitting} variant={'contained'} size={'large'}>
+                Login
+            </Button>
+            <Typography sx={{textAlign: 'center'}}>
+                Don't have an account?
+                <Typography component={Link} to={'/register'} color={'primary'} sx={{ml: 2}}>
+                    Sign up
+                </Typography>
+            </Typography>
+        </Paper>
+    );
+}
+
+export default LoginForm;

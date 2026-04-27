@@ -1,13 +1,16 @@
-﻿import {AppBar, Box, Button, Container, LinearProgress, MenuList, Toolbar, Typography} from "@mui/material";
+﻿import {AppBar, Box, Container, LinearProgress, MenuList, Toolbar, Typography} from "@mui/material";
 import {Group} from "@mui/icons-material";
 import {NavLink} from "react-router";
 import MenuItemLink from "../shared/components/MenuItemLink.tsx";
 import {useStore} from "../../lib/hooks/useStore.ts";
 import {Observer} from "mobx-react-lite";
+import {useAccount} from "../../lib/hooks/useAccount.ts";
+import UserMenu from "./UserMenu.tsx";
 
 function NavBar() {
 
     const {uiStore} = useStore();
+    const {currentUser} = useAccount()
 
     return (
         <Box sx={{flexGrow: 1}}>
@@ -24,14 +27,23 @@ function NavBar() {
                             </Typography>
                         </Box>
                         <MenuList sx={{display: "flex"}}>
-                            {['activities', 'createActivity', 'counter', 'errors'].map((item) => (
+                            {['activities', 'counter', 'errors'].map((item) => (
                                 <MenuItemLink key={item} to={`/${item}`}>
                                     {item}
                                 </MenuItemLink>
                             ))}
                         </MenuList>
-                        <Button size="large" variant="contained" color="warning" onClick={() => {
-                        }}>User menu</Button>
+                        <Box sx={{display: "flex", alignItems: "center"}}>
+                            {currentUser ? (
+                                <UserMenu/>
+                            ) : (
+                                <MenuList sx={{display: 'flex'}}>
+                                    <MenuItemLink to={'/login'}>Login</MenuItemLink>
+                                    <MenuItemLink to={'/register'}>Register</MenuItemLink>
+                                </MenuList>
+                            )
+                            }
+                        </Box>
                     </Toolbar>
                 </Container>
 
