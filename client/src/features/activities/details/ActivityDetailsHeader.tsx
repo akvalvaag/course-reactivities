@@ -1,25 +1,25 @@
-﻿import {Card, Badge, CardMedia, Box, Typography, Button} from "@mui/material";
+﻿import {Box, Button, Card, CardMedia, Chip, Typography} from "@mui/material";
 import {Link} from "react-router";
 import {formatDate} from "../../../lib/util/util.ts";
-import type {Activity} from "../../../lib/types";
+import {useActivities} from "../../../lib/hooks/useActivities.ts";
 
 interface ActivityDetailsHeaderProps {
     activity: Activity
 }
 
 export default function ActivityDetailsHeader({activity}: ActivityDetailsHeaderProps) {
-    const isCancelled = false;
-    const isHost = true;
-    const isGoing = true;
-    const loading = false;
+    const isCancelled = activity.isCancelled;
+    const isHost = activity.isHost;
+    const isGoing = activity.isGoing;
+    const {updateAttendance} = useActivities(activity.id)
 
     return (
         <Card sx={{position: 'relative', mb: 2, backgroundColor: 'transparent', overflow: 'hidden'}}>
             {isCancelled && (
-                <Badge
-                    sx={{position: 'absolute', left: 40, top: 20, zIndex: 1000}}
+                <Chip
+                    sx={{position: 'absolute', left: 40, top: 20, zIndex: 1000, borderRadius: 1}}
                     color="error"
-                    badgeContent="Cancelled"
+                    label="Cancelled"
                 />
             )}
             <CardMedia
@@ -46,8 +46,8 @@ export default function ActivityDetailsHeader({activity}: ActivityDetailsHeaderP
                     <Typography variant="h4" sx={{fontWeight: 'bold'}}>{activity.title}</Typography>
                     <Typography variant="subtitle1">{formatDate(activity.date)}</Typography>
                     <Typography variant="subtitle2">
-                        Hosted by <Link to={`/profiles/username`}
-                                        style={{color: 'white', fontWeight: 'bold'}}>Bob</Link>
+                        Hosted by <Link to={`/profiles/${activity.isHost}`}
+                                        style={{color: 'white', fontWeight: 'bold'}}>{activity.hostDisplayName}</Link>
                     </Typography>
                 </Box>
 
@@ -58,8 +58,8 @@ export default function ActivityDetailsHeader({activity}: ActivityDetailsHeaderP
                             <Button
                                 variant='contained'
                                 color={isCancelled ? 'success' : 'error'}
-                                onClick={() => {
-                                }}
+                                onClick={() => updateAttendance.mutate(activity.id)}
+                                loading={updateAttendance.isPending}
                             >
                                 {isCancelled ? 'Re-activate Activity' : 'Cancel Activity'}
                             </Button>
@@ -77,9 +77,9 @@ export default function ActivityDetailsHeader({activity}: ActivityDetailsHeaderP
                         <Button
                             variant="contained"
                             color={isGoing ? 'primary' : 'info'}
-                            onClick={() => {
-                            }}
-                            disabled={isCancelled || loading}
+                            onClick={() => updateAttendance.mutate(activity.id)}
+                            disabled={activity.isCancelled}
+                            loading={updateAttendance.isPending}
                         >
                             {isGoing ? 'Cancel Attendance' : 'Join Activity'}
                         </Button>
