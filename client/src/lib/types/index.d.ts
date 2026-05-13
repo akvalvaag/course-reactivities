@@ -1,4 +1,10 @@
-﻿type Activity = {
+﻿
+type PagedList<T, TCursor> = {
+    items: T[];
+    nextCursor: TCursor;
+}
+
+type Activity = {
     id: string
     title: string
     date: Date
